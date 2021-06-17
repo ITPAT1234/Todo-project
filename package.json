@@ -1,13 +1,10 @@
 {
-  "name": "FaceSchoolV2",
+  "name": "todo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "index.js",
-    "server": "nodemon index.js",
-    "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
