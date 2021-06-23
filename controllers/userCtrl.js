@@ -80,18 +80,20 @@ const userCtrl = {
     },
     getAccessToken: async (req, res) => {
         try {
-            const rf_token = req.cookies.refreshToken
+            const rf_token = req.cookies.refreshToken;
             console.log(rf_token);
-            if (!rf_token) return res.status(400).json({ msg: "Please login now!" })
+            if (!rf_token)
+                return res.status(400).json({ msg: "Please login now!" });
 
             jwt.verify(rf_token, keys.REFRESH_TOKEN_SECRET, (err, user) => {
-                if (err) return res.status(400).json({ msg: "Please login now!" })
-                const access_token = createAccessToken({ id: user.id })
+                if (err)
+                    return res.status(400).json({ msg: "Please login now!" });
+                const access_token = createAccessToken({ id: user.id });
                 console.log(access_token);
-                res.json({ access_token })
-            })
+                res.json({ access_token });
+            });
         } catch (err) {
-            return res.status(500).json({ msg: err.message })
+            return res.status(500).json({ msg: err.message });
         }
     },
     getUserInfo: async (req, res) => {
