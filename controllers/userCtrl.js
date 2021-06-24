@@ -35,7 +35,7 @@ const userCtrl = {
 
             await newUser.save();
 
-            res.json({ msg: "Register Success!" });
+            res.json({ msg: "Success" });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
