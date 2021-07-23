@@ -44,25 +44,21 @@ const userCtrl = {
         try {
             const { username, password } = req.body;
             const User = await user.findOne({ username });
-            console.log(User);
-
-            // check exist user
             if (!User)
                 return res
                     .status(400)
                     .json({ msg: "This email does not exist." });
 
-            // check password
             const isMatch = await bcrypt.compare(password, User.password);
-
             if (!isMatch)
                 return res.status(400).json({ msg: "Password is incorrect." });
 
             const refreshToken = createRefreshToken({ id: User._id });
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                path: "/user/refreshToken",
-                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
+                path: "/user/refresh_token",
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                secure: process.env.NODE_ENV === "production" ? true : false,
             });
 
             res.json({ msg: "Login success!" });
@@ -72,8 +68,8 @@ const userCtrl = {
     },
     logout: async (req, res) => {
         try {
-            res.clearCookie("refreshToken", { path: "/user/refreshToken" });
-            res.json({ msg: "LogOut!" });
+            res.clearCookie("refreshToken", { path: " /user/refresh_token" });
+            res.json({ msg: "LogOut" });
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
@@ -81,7 +77,6 @@ const userCtrl = {
     getAccessToken: async (req, res) => {
         try {
             const rf_token = req.cookies.refreshToken;
-            console.log(rf_token);
             if (!rf_token)
                 return res.status(400).json({ msg: "Please login now!" });
 
@@ -89,7 +84,6 @@ const userCtrl = {
                 if (err)
                     return res.status(400).json({ msg: "Please login now!" });
                 const access_token = createAccessToken({ id: user.id });
-                console.log(access_token);
                 res.json({ access_token });
             });
         } catch (err) {
@@ -100,7 +94,6 @@ const userCtrl = {
         try {
             const User = await user.findById(req.user.id).select("-password");
             res.json(User);
-            console.log(User);
         } catch (err) {
             return res.status(500).json({ msg: err.message });
         }
@@ -108,10 +101,10 @@ const userCtrl = {
 };
 
 const createAccessToken = (payload) => {
-    return jwt.sign(payload, keys.ACCESS_TOKEN_SECRET, { expiresIn: "1d" });
+    return jwt.sign(payload, keys.ACCESS_TOKEN_SECRET);
 };
 const createRefreshToken = (payload) => {
-    return jwt.sign(payload, keys.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+    return jwt.sign(payload, keys.REFRESH_TOKEN_SECRET);
 };
 
 module.exports = userCtrl;

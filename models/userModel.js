@@ -12,10 +12,6 @@ const userSchema = mongoose.Schema({
         unique: true,
         require: true,
     },
-    todoList: {
-        type: Array,
-        default: [],
-    },
 });
 
 module.exports = mongoose.model("user", userSchema);

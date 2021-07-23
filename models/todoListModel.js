@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
 
 const todoListSchema = mongoose.Schema({
-    todoList: [
+    todoContent: [
         {
-            type: String,
+            content: String,
+            status: Boolean,
         },
     ],
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+    },
 });
 
 module.exports = mongoose.model("todoList", todoListSchema);

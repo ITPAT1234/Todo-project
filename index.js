@@ -7,9 +7,20 @@ const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 5000;
 const path = require("path");
 
-app.use(express.json());
-app.use(cors());
+const jwt = require("jsonwebtoken");
+
 app.use(cookieParser());
+app.use(express.json());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(function (req, res, next) {
+    res.header("Content-Type", "application/json;charset=UTF-8");
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 
 // Routers
 app.use("/user", require("./routers/userRouter"));
@@ -36,10 +47,6 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.join(__dirname, "client", "build", "index.html"));
     });
 }
-
-app.get("/", (req, res) => {
-    res.send({ msg: "HI" });
-});
 
 // Running Server
 app.listen(PORT, () => {
